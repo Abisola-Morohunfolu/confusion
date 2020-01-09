@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 function RenderLeaders({ leader }) {
 	return (
-		<Media tag="li">
+		<Media tag="li" >
 			<Media left middle>
 				<Media object src={leader.image} alt={leader.name} />
 			</Media>
@@ -84,12 +84,17 @@ const About = props => {
 					</Card>
 				</div>
 			</div>
-            <div className="row row-content">
-                <div className="col-12">
-                    <h2>Corporate Leadership</h2>
+			<div className="row row-content">
+				<div className="col-12">
+					<h2>Corporate Leadership</h2>
+				</div>
+				<div className="col-12 mt-2">
+					{leaders.map(leader => (
+                        <RenderLeaders leader={leader} key={leader.id} />
+						)
+					)}
                 </div>
-                {leaders.map(leader => <RenderLeaders leader={leader} />)}
-            </div>
+			</div>
 		</div>
 	);
 };
