@@ -1,8 +1,9 @@
 import * as ActionTypes from './ActionTypes';
-import { DISHES } from '../shared/dishes';
+// import { DISHES } from '../shared/dishes';
+import { baseUrl } from '../shared/baseUrl';
 
-export const addComments = (dishId, rating, author, comment) => ({
-	type: ActionTypes.ADD_COMMENTS,
+export const addComment = (dishId, rating, author, comment) => ({
+	type: ActionTypes.ADD_COMMENT,
 	payload: {
 		dishId: dishId,
 		rating: rating,
@@ -11,12 +12,13 @@ export const addComments = (dishId, rating, author, comment) => ({
 	}
 });
 
+//dishes actions
 export const fetchDishes = () => dispatch => {
 	dispatch(dishesLoading(true));
 
-	setTimeout(() => {
-		dispatch(addDishes(DISHES));
-	}, 2000);
+	return fetch(baseUrl + 'dishes')
+		.then(response => response.json())
+		.then(dishes => dispatch(addDishes(dishes)));
 };
 
 export const dishesLoading = () => ({
@@ -31,4 +33,67 @@ export const dishesFailed = errorMessage => ({
 export const addDishes = dishes => ({
 	type: ActionTypes.ADD_DISHES,
 	payload: dishes
+});
+
+//comments actions
+export const commentsFailed = errorMessage => ({
+	type: ActionTypes.COMMENTS_FAILED,
+	payload: errorMessage
+});
+
+export const addComments = comments => ({
+	type: ActionTypes.ADD_COMMENTS,
+	payload: comments
+});
+
+export const fetchComments = () => dispatch => {
+	return fetch(baseUrl + 'comments')
+		.then(response => response.json())
+		.then(comments => dispatch(addComments(comments)));
+};
+
+//promotions actions
+export const fetchPromos = () => dispatch => {
+	dispatch(promosLoading(true));
+
+	return fetch(baseUrl + 'promotions')
+		.then(response => response.json())
+		.then(promos => dispatch(addPromos(promos)));
+};
+
+export const promosLoading = () => ({
+	type: ActionTypes.PROMOS_LOADING
+});
+
+export const promosFailed = errorMessage => ({
+	type: ActionTypes.PROMOS_FAILED,
+	payload: errorMessage
+});
+
+export const addPromos = promos => ({
+	type: ActionTypes.ADD_PROMOS,
+	payload: promos
+});
+
+//promotions actions
+export const fetchLeaders = () => dispatch => {
+	dispatch(leadersLoading(true));
+
+	return fetch(baseUrl + 'leaders')
+		.then(response => response.json())
+		.then(leaders => dispatch(addLeaders(leaders)));
+};
+
+export const leadersLoading = () => ({
+	type: ActionTypes.LEADERS_LOADING
+});
+
+export const leadersFailed = errorMessage => ({
+	type: ActionTypes.LEADERS_FAILED,
+	payload: errorMessage
+});
+
+export const addLeaders = leaders => ({
+	type: ActionTypes.ADD_LEADERS,
+	payload: leaders
 });

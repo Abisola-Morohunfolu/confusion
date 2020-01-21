@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Breadcrumb, BreadcrumbItem, Button, Label, Col, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { Control, LocalForm, Errors } from 'react-redux-form';
+import { Control, Form, Errors, actions } from 'react-redux-form';
 
 //form validation
 const required = val => val && val.length;
@@ -15,6 +15,7 @@ class Contact extends Component {
 		// event.preventDefault();
 		console.log(`Current State is ${JSON.stringify(values)}`);
 		alert(`Current State is ${JSON.stringify(values)}`);
+		this.props.resetForm();
 	};
 
 	render() {
@@ -75,7 +76,7 @@ class Contact extends Component {
 						<h3>Send us Your Feedback</h3>
 					</div>
 					<div className="col-12 col-md-9">
-						<LocalForm onSubmit={values => this.handleSubmit(values)}>
+						<Form model="feedback" onSubmit={values => this.handleSubmit(values)}>
 							<Row className="form-group">
 								<Label htmlFor="firstname" md={2}>
 									First Name
@@ -197,7 +198,7 @@ class Contact extends Component {
 								<Col md={{ size: 6, offset: 2 }}>
 									<div className="form-check">
 										<Label check>
-											<Control.checkbox model=".agree" className="form-check-input" name="agree" />{' '}
+											<Control.checkbox model=".agree" name="agree" className="form-check-input" />{' '}
 											<strong>May we contact you?</strong>
 										</Label>
 									</div>
@@ -213,7 +214,7 @@ class Contact extends Component {
 								<Label htmlFor="message" md={2}>
 									Your Feedback
 								</Label>
-								<Col md={10} >
+								<Col md={10}>
 									<Control.textarea
 										model=".message"
 										id="message"
@@ -231,7 +232,7 @@ class Contact extends Component {
 									</Button>
 								</Col>
 							</Row>
-						</LocalForm>
+						</Form>
 					</div>
 				</div>
 			</div>

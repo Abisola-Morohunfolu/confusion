@@ -18,6 +18,7 @@ import {
 import { LocalForm, Errors, Control } from 'react-redux-form';
 import { Link } from 'react-router-dom';
 import Loading from './LoadingComponent';
+import { baseUrl } from "../shared/baseUrl";
 
 const required = val => val && val.length;
 const maxLength = len => val => !val || val.length <= len;
@@ -41,7 +42,7 @@ class DishDetail extends Component {
 	};
 
 	render() {
-		const { dish, comments, addComments, isLoading, errorMessage } = this.props;
+		const { dish, comments, addComment, isLoading, errorMessage } = this.props;
 		const singleComment = comments.map(comment => {
 			return (
 				<div key={comment.date}>
@@ -94,7 +95,7 @@ class DishDetail extends Component {
 					<div className="row">
 						<div className="col-12 col-md-5 m-1">
 							<Card>
-								<CardImg width="100%" src={dish.image} alt={dish.name} />
+								<CardImg width="100%" src={baseUrl + dish.image} alt={dish.name} />
 								<CardBody>
 									<CardTitle>{dish.name}</CardTitle>
 									<CardText>{dish.description}</CardText>
@@ -115,7 +116,7 @@ class DishDetail extends Component {
 							<LocalForm
 								onSubmit={values => {
 									this.toggleModal();
-									addComments(dish.id, values.rating, values.author, values.comment);
+									addComment(dish.id, values.rating, values.author, values.comment);
 								}}
 							>
 								<Row className="form-group">

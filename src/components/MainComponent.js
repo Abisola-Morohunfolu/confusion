@@ -8,7 +8,14 @@ import DishDetail from './DishDetails';
 import About from './AboutComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addComments, fetchDishes } from '../redux/ActionCreators';
+import {
+	addComment,
+	fetchDishes,
+	fetchComments,
+	fetchPromos,
+	fetchLeaders
+} from '../redux/ActionCreators';
+import { actions } from 'react-redux-form';
 
 const mapStateToProps = state => {
 	return {
@@ -20,10 +27,22 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-	addComments: (dishId, rating, author, comment) =>
-		dispatch(addComments(dishId, rating, author, comment)),
+	addComment: (dishId, rating, author, comment) =>
+		dispatch(addComment(dishId, rating, author, comment)),
 	fetchDishes: () => {
 		dispatch(fetchDishes());
+	},
+	resetFeedbackForm: () => {
+		dispatch(actions.reset('feedback'));
+	},
+	fetchComments: () => {
+		dispatch(fetchComments());
+	},
+	fetchPromos: () => {
+		dispatch(fetchPromos());
+	},
+	fetchLeaders: () => {
+		dispatch(fetchLeaders());
 	}
 });
 
@@ -36,6 +55,9 @@ class Main extends Component {
 	// };
 	componentDidMount() {
 		this.props.fetchDishes();
+		this.props.fetchComments();
+		this.props.fetchPromos();
+		this.props.fetchLeaders();
 	}
 
 	render() {
@@ -43,10 +65,14 @@ class Main extends Component {
 			return (
 				<Home
 					dish={this.props.dishes.dishes.filter(dish => dish.featured)[0]}
-					promotion={this.props.promotions.filter(promotion => promotion.featured)[0]}
-					leader={this.props.leaders.filter(leader => leader.featured)[0]}
+					promotion={this.props.promotions.promotions.filter(promotion => promotion.featured)[0]}
+					leader={this.props.leaders.leaders.filter(leader => leader.featured)[0]}
 					dishesLoading={this.props.dishes.isLoading}
 					dishesError={this.props.dishes.errorMessage}
+					promosLoading={this.props.promotions.isLoading}
+					promosError={this.props.promotions.errorMessage}
+					leadersLoading={this.props.leaders.isLoading}
+					leadersError={this.props.leaders.errorMessage}
 				/>
 			);
 		};
@@ -56,10 +82,10 @@ class Main extends Component {
 					dish={
 						this.props.dishes.dishes.filter(dish => dish.id === parseInt(match.params.dishId))[0]
 					}
-					comments={this.props.comments.filter(
+					comments={this.props.comments.comments.filter(
 						comment => comment.dishId === parseInt(match.params.dishId)
 					)}
-					addComments={this.props.addComments}
+					addComment={this.props.addComment}
 					isLoading={this.props.dishes.isLoading}
 					errorMessage={this.props.dishes.errorMessage}
 				/>
@@ -82,16 +108,18 @@ class Main extends Component {
 						)}
 					/>
 					<Route path="/menu/:dishId" component={DishWithId} />
-					<Route exact path="/contactus" component={Contact} />
-					<Route exact path="/aboutus" component={() => <About leaders={this.props.leaders} />} />
+					<Route
+						exact
+						path="/contactus"
+						component={() => <Contact resetForm={this.props.resetFeedbackForm} />}
+					/>
+					<Route
+						exact
+						path="/aboutus"
+						component={() => <About leaders={this.props.leaders.leaders} />}
+					/>
 					<Redirect to="/home" />
 				</Switch>
-
-				{/* <DishDetail
-					dish={this.props.dishes.filter(dish => dish.id === this.state.selectedDish)[0]}
-					modal={this.state.openModal}
-					closeModal={() => this.closeModal()}
-				/> */}
 				<Footer />
 			</div>
 		);
