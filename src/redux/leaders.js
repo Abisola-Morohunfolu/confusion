@@ -1,4 +1,4 @@
-import { LEADERS } from '../shared/leaders';
+// import { LEADERS } from '../shared/leaders';
 import * as ActionTypes from './ActionTypes';
 
 export const Leaders = (

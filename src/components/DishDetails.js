@@ -42,7 +42,7 @@ class DishDetail extends Component {
 	};
 
 	render() {
-		const { dish, comments, addComment, isLoading, errorMessage } = this.props;
+		const { dish, comments, postComment, isLoading, errorMessage } = this.props;
 		const singleComment = comments.map(comment => {
 			return (
 				<div key={comment.date}>
@@ -116,7 +116,7 @@ class DishDetail extends Component {
 							<LocalForm
 								onSubmit={values => {
 									this.toggleModal();
-									addComment(dish.id, values.rating, values.author, values.comment);
+									postComment(dish.id, values.rating, values.author, values.comment);
 								}}
 							>
 								<Row className="form-group">

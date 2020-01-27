@@ -2,23 +2,74 @@ import * as ActionTypes from './ActionTypes';
 // import { DISHES } from '../shared/dishes';
 import { baseUrl } from '../shared/baseUrl';
 
-export const addComment = (dishId, rating, author, comment) => ({
+export const addComment = comment => ({
 	type: ActionTypes.ADD_COMMENT,
-	payload: {
-		dishId: dishId,
-		rating: rating,
-		author: author,
-		comment: comment
-	}
+	payload: comment
 });
+
+export const postComment = (dishId, rating, author, comment) => dispatch => {
+	const newComment = {
+		dishId: dishId,
+		rating,
+		author,
+		comment
+	};
+	newComment.date = new Date().toISOString();
+
+	return fetch(baseUrl + 'comments', {
+		method: 'POST',
+		body: JSON.stringify(newComment),
+		headers: {
+			'Content-type': 'application/json'
+		},
+		credentials: 'same-origin'
+	})
+		.then(
+			response => {
+				if (response.ok) {
+					return response;
+				} else {
+					const error = new Error(`Error ${response.status} : ${response.statusText}`);
+					error.response = response;
+					throw error;
+				}
+			}, //CALLBACK FUNCTION TO HANDLE NO RESPONSE FROM SERVER
+			error => {
+				const errMessage = new Error(error.message);
+				throw errMessage;
+			}
+		)
+		.then(response => response.json())
+		.then(comment => dispatch(addComment(comment)))
+		.catch(error => {
+			console.log(error);
+			alert('Your comment was not posted');
+		});
+};
 
 //dishes actions
 export const fetchDishes = () => dispatch => {
 	dispatch(dishesLoading(true));
 
 	return fetch(baseUrl + 'dishes')
+		.then(
+			response => {
+				if (response.ok) {
+					return response;
+				} else {
+					const error = new Error(`Error ${response.status} : ${response.statusText}`);
+					error.response = response;
+					throw error;
+				}
+			}, //CALLBACK FUNCTION TO HANDLE NO RESPONSE FROM SERVER
+			error => {
+				const errMessage = new Error(error.message);
+				throw errMessage;
+			}
+		)
 		.then(response => response.json())
-		.then(dishes => dispatch(addDishes(dishes)));
+		.then(dishes => dispatch(addDishes(dishes)))
+		.catch(error => dispatch(dishesFailed(error.message)));
 };
 
 export const dishesLoading = () => ({
@@ -36,6 +87,28 @@ export const addDishes = dishes => ({
 });
 
 //comments actions
+export const fetchComments = () => dispatch => {
+	return fetch(baseUrl + 'comments')
+		.then(
+			response => {
+				if (response.ok) {
+					return response;
+				} else {
+					const error = new Error(`Error ${response.status} : ${response.statusText}`);
+					error.response = response;
+					throw error;
+				}
+			}, //CALLBACK FUNCTION TO HANDLE NO RESPONSE FROM SERVER
+			error => {
+				const errMessage = new Error(error.message);
+				throw errMessage;
+			}
+		)
+		.then(response => response.json())
+		.then(comments => dispatch(addComments(comments)))
+		.catch(error => dispatch(commentsFailed(error.message)));
+};
+
 export const commentsFailed = errorMessage => ({
 	type: ActionTypes.COMMENTS_FAILED,
 	payload: errorMessage
@@ -46,19 +119,29 @@ export const addComments = comments => ({
 	payload: comments
 });
 
-export const fetchComments = () => dispatch => {
-	return fetch(baseUrl + 'comments')
-		.then(response => response.json())
-		.then(comments => dispatch(addComments(comments)));
-};
-
 //promotions actions
 export const fetchPromos = () => dispatch => {
 	dispatch(promosLoading(true));
 
 	return fetch(baseUrl + 'promotions')
+		.then(
+			response => {
+				if (response.ok) {
+					return response;
+				} else {
+					const error = new Error(`Error ${response.status} : ${response.statusText}`);
+					error.response = response;
+					throw error;
+				}
+			}, //CALLBACK FUNCTION TO HANDLE NO RESPONSE FROM SERVER
+			error => {
+				const errMessage = new Error(error.message);
+				throw errMessage;
+			}
+		)
 		.then(response => response.json())
-		.then(promos => dispatch(addPromos(promos)));
+		.then(promos => dispatch(addPromos(promos)))
+		.catch(error => dispatch(promosFailed(error.message)));
 };
 
 export const promosLoading = () => ({
@@ -80,8 +163,24 @@ export const fetchLeaders = () => dispatch => {
 	dispatch(leadersLoading(true));
 
 	return fetch(baseUrl + 'leaders')
+		.then(
+			response => {
+				if (response.ok) {
+					return response;
+				} else {
+					const error = new Error(`Error ${response.status} : ${response.statusText}`);
+					error.response = response;
+					throw error;
+				}
+			}, //CALLBACK FUNCTION TO HANDLE NO RESPONSE FROM SERVER
+			error => {
+				const errMessage = new Error(error.message);
+				throw errMessage;
+			}
+		)
 		.then(response => response.json())
-		.then(leaders => dispatch(addLeaders(leaders)));
+		.then(leaders => dispatch(addLeaders(leaders)))
+		.catch(error => dispatch(leadersFailed(error.message)));
 };
 
 export const leadersLoading = () => ({
