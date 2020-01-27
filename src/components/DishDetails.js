@@ -18,7 +18,8 @@ import {
 import { LocalForm, Errors, Control } from 'react-redux-form';
 import { Link } from 'react-router-dom';
 import Loading from './LoadingComponent';
-import { baseUrl } from "../shared/baseUrl";
+import { baseUrl } from '../shared/baseUrl';
+import { FadeTransform, Stagger, Fade } from 'react-animation-components';
 
 const required = val => val && val.length;
 const maxLength = len => val => !val || val.length <= len;
@@ -45,17 +46,21 @@ class DishDetail extends Component {
 		const { dish, comments, postComment, isLoading, errorMessage } = this.props;
 		const singleComment = comments.map(comment => {
 			return (
-				<div key={comment.date}>
-					<p>{comment.comment}</p>
-					<p>
-						-- {comment.author} ,
-						{new Intl.DateTimeFormat('en-US', {
-							year: 'numeric',
-							month: 'short',
-							day: '2-digit'
-						}).format(new Date(Date.parse(comment.date)))}
-					</p>
-				</div>
+				<Stagger in>
+					<li key={comment.date}>
+						<Fade in>
+							<p>{comment.comment}</p>
+							<p>
+								-- {comment.author} ,
+								{new Intl.DateTimeFormat('en-US', {
+									year: 'numeric',
+									month: 'short',
+									day: '2-digit'
+								}).format(new Date(Date.parse(comment.date)))}
+							</p>
+						</Fade>
+					</li>
+				</Stagger>
 			);
 		});
 		if (isLoading) {
@@ -94,16 +99,23 @@ class DishDetail extends Component {
 					</div>
 					<div className="row">
 						<div className="col-12 col-md-5 m-1">
-							<Card>
-								<CardImg width="100%" src={baseUrl + dish.image} alt={dish.name} />
-								<CardBody>
-									<CardTitle>{dish.name}</CardTitle>
-									<CardText>{dish.description}</CardText>
-								</CardBody>
-							</Card>
+							<FadeTransform
+								in
+								transformProps={{
+									exitTransform: 'scale(0.5) translateY(-50%)'
+								}}
+							>
+								<Card>
+									<CardImg width="100%" src={baseUrl + dish.image} alt={dish.name} />
+									<CardBody>
+										<CardTitle>{dish.name}</CardTitle>
+										<CardText>{dish.description}</CardText>
+									</CardBody>
+								</Card>
+							</FadeTransform>
 						</div>
 						<div className="col-12 col-md-5 m-1 Comment">
-							{singleComment}
+							<ul className="list-unstyled">{singleComment}</ul>
 
 							<Button color="outline" onClick={this.toggleModal}>
 								<span className="fa fa-pencil fa-lg mr-1"></span>Submit Comment
